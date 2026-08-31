@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ইপসার জন্য একটি চিঠি</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tiro+Bangla:ital@0;1&family=Hind+Siliguri:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #F7F1E4;
+    --paper-shadow: #e8dfc8;
+    --ink: #33302a;
+    --rose: #b5636f;
+    --gold: #ab8a4c;
+    --envelope: #e4c9a8;
+    --envelope-dark: #cfa878;
+    --envelope-flap: #d9b489;
+  }
+
+  *{ box-sizing: border-box; }
+
+  body{
+    margin:0;
+    min-height:100vh;
+    background:
+      radial-gradient(circle at 20% 20%, #fdf9ef 0%, transparent 45%),
+      radial-gradient(circle at 80% 80%, #f2e6cf 0%, transparent 50%),
+      #efe6d3;
+    font-family: 'Hind Siliguri', sans-serif;
+    color: var(--ink);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding: 24px;
+    overflow-x:hidden;
+  }
+
+  /* ---------- Envelope scene ---------- */
+  .scene{
+    width:100%;
+    max-width: 480px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:22px;
+  }
+
+  .envelope-wrap{
+    perspective: 1200px;
+    width: 100%;
+    max-width: 360px;
+  }
+
+  .envelope{
+    position:relative;
+    width:100%;
+    aspect-ratio: 3 / 2;
+    cursor:pointer;
+    filter: drop-shadow(0 18px 30px rgba(80,60,30,0.25));
+  }
+
+  .envelope-body{
+    position:absolute;
+    inset:0;
+    background: var(--envelope);
+    border-radius: 6px;
+    overflow:hidden;
+  }
+
+  .envelope-body::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:
+      linear-gradient(135deg, transparent 49.3%, var(--envelope-dark) 49.3%, var(--envelope-dark) 50.7%, transparent 50.7%),
+      linear-gradient(-135deg, transparent 49.3%, var(--envelope-dark) 49.3%, var(--envelope-dark) 50.7%, transparent 50.7%);
+    opacity:.5;
+  }
+
+  .flap{
+    position:absolute;
+    top:0; left:0; right:0;
+    height:58%;
+    background: var(--envelope-flap);
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    transform-origin: top center;
+    transition: transform 0.7s cubic-bezier(.6,-0.1,.3,1.3);
+    z-index:3;
+  }
+
+  .envelope.open .flap{
+    transform: rotateX(180deg);
+    z-index:1;
+  }
+
+  .seal{
+    position:absolute;
+    top: 44%;
+    left:50%;
+    transform: translate(-50%,-50%);
+    width:46px; height:46px;
+    border-radius:50%;
+    background: var(--rose);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#fff2ee;
+    font-size:20px;
+    z-index:4;
+    box-shadow: 0 3px 6px rgba(0,0,0,.25);
+    transition: opacity .3s ease, transform .3s ease;
+  }
+
+  .envelope.open .seal{
+    opacity:0;
+    transform: translate(-50%,-50%) scale(.4);
+  }
+
+  .letter-peek{
+    position:absolute;
+    left:6%; right:6%;
+    bottom:6%;
+    height:70%;
+    background: var(--paper);
+    border-radius: 3px;
+    z-index:2;
+    box-shadow: 0 -2px 6px rgba(0,0,0,.08);
+    transition: transform .6s cubic-bezier(.2,.8,.3,1.2) .15s;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:'Tiro Bangla', serif;
+    color: var(--rose);
+    font-size: 34px;
+    font-weight:700;
+    letter-spacing:.04em;
+    text-align:center;
+  }
+
+  .envelope.open .letter-peek{
+    transform: translateY(-38%);
+  }
+
+  .hint{
+    font-size: 14px;
+    color:#8a7454;
+    letter-spacing:.02em;
+  }
+
+  .envelope.open + .hint{
+    opacity:0;
+  }
+
+  /* ---------- Letter ---------- */
+  .letter-window{
+    width:100%;
+    max-height:0;
+    opacity:0;
+    overflow:hidden;
+    transition: max-height 0.9s ease, opacity 0.9s ease;
+  }
+
+  .letter-window.show{
+    max-height: 4000px;
+    opacity:1;
+  }
+
+  .letter{
+    background: var(--paper);
+    background-image:
+      linear-gradient(var(--paper-shadow) 1px, transparent 1px);
+    background-size: 100% 38px;
+    border-radius: 4px;
+    box-shadow: 0 20px 45px rgba(70,50,20,0.18), 0 2px 6px rgba(70,50,20,0.1);
+    padding: 44px 34px 40px;
+    position:relative;
+  }
+
+  .letter::before{
+    content:"";
+    position:absolute;
+    top:0; bottom:0; left: 46px;
+    width:1px;
+    background: rgba(181,99,111,0.25);
+  }
+
+  .letter-head{
+    font-family:'Tiro Bangla', serif;
+    font-size: 15px;
+    color:#8a7454;
+    margin: 0 0 18px 46px;
+  }
+
+  .letter-greeting{
+    font-family:'Tiro Bangla', serif;
+    font-size: 26px;
+    color: var(--rose);
+    margin: 0 0 22px 46px;
+  }
+
+  .letter-body p{
+    margin: 0 0 20px 46px;
+    line-height: 38px;
+    font-size: 17px;
+    font-weight:400;
+    text-align:justify;
+    text-justify: inter-word;
+  }
+
+  .letter-sign{
+    margin: 30px 0 0 46px;
+    font-family:'Tiro Bangla', serif;
+    font-size: 20px;
+    color: var(--gold);
+  }
+
+  .letter-sign span{
+    display:block;
+    font-family:'Hind Siliguri', sans-serif;
+    font-size: 15px;
+    color:#8a7454;
+    margin-top:4px;
+  }
+
+  @media (max-width: 420px){
+    .letter{ padding: 34px 20px 30px; }
+    .letter-body p, .letter-greeting, .letter-head, .letter-sign{ margin-left: 30px; }
+    .letter::before{ left: 30px; }
+    .letter-body p{ font-size: 16px; line-height: 34px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .flap, .letter-peek, .letter-window{ transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="scene">
+  <div class="envelope-wrap">
+    <div class="envelope" id="envelope" role="button" aria-label="খামটি খুলুন" tabindex="0">
+      <div class="envelope-body">
+        <div class="letter-peek">চিঠি</div>
+      </div>
+      <div class="flap"></div>
+      <div class="seal">ই</div>
+    </div>
+  </div>
+  <p class="hint" id="hint">খামের উপর ক্লিক করো</p>
+
+  <div class="letter-window" id="letterWindow">
+    <div class="letter">
+      <p class="letter-head">শুভ চিঠি দিবস</p>
+      <p class="letter-greeting">প্রিয় ইপসা,</p>
+      <div class="letter-body">
+        <p>রাগ করা শরীরের জন্য ক্ষতিকর, তাই বেশি রাগ করিস না 🙂</p>
+      </div>
+      <p class="letter-sign">ইতি,
+        <span>শাওন</span>
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+  const envelope = document.getElementById('envelope');
+  const letterWindow = document.getElementById('letterWindow');
+  const hint = document.getElementById('hint');
+
+  function openEnvelope(){
+    if(envelope.classList.contains('open')) return;
+    envelope.classList.add('open');
+    hint.style.opacity = '0';
+    setTimeout(() => {
+      letterWindow.classList.add('show');
+      letterWindow.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 500);
+  }
+
+  envelope.addEventListener('click', openEnvelope);
+  envelope.addEventListener('keydown', (e) => {
+    if(e.key === 'Enter' || e.key === ' '){
+      e.preventDefault();
+      openEnvelope();
+    }
+  });
+</script>
+
+</body>
+</html>
